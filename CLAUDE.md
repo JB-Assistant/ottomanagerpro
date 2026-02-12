@@ -6,6 +6,27 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 OilChange Pro (GarageOSPro) is a multi-tenant SaaS CRM for auto repair shops. Built with Next.js 16 (App Router), React 19, TypeScript, Prisma/PostgreSQL, Clerk auth, and Twilio SMS. Shops track customers, vehicles, service records, and send automated SMS reminders.
 
+## Code Rules (MANDATORY)
+
+### File Size Limits
+
+| Type            | Max LOC |
+| --------------- | ------- |
+| Page components | 200     |
+| Components      | 300     |
+| Hooks           | 150     |
+| API routes      | 300     |
+| Utilities       | 200     |
+| **Hard limit**  | **400** |
+
+### Core Standards
+
+- **No `any` types** - Strict TypeScript only
+- **Mobile-first** - 44x44px touch targets
+- **Single responsibility** - One reason to change per module
+- **No prop drilling** - Max 2 levels, then use context
+- **Test coverage** - Minimum 70%
+
 ## Commands
 
 ```bash
@@ -46,6 +67,7 @@ Every database query is scoped by `orgId` from Clerk's `auth()`. The Organizatio
 ### SMS Reminder System
 
 Two cron endpoints power the reminder pipeline:
+
 1. `/api/cron/process-reminders` — Daily: evaluates due services, creates queued ReminderMessage records
 2. `/api/cron/send-queued` — Sends queued messages in batches of 100, respects quiet hours
 
