@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { CustomerStatus, Prisma } from '@prisma/client'
 import { calculateNextDueDate, calculateNextDueMileage } from '@/lib/customer-status'
+import { ensureOrganization } from '@/lib/ensure-org'
 
 type CSVFormat = 'standard' | 'shop'
 
@@ -21,15 +22,18 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'No file uploaded' }, { status: 400 })
     }
 
-    const text = await file.text()
+    const rawText = await file.text()
+    const text = rawText.replace(/^\uFEFF/, '').replace(/\r\n/g, '\n').replace(/\r/g, '\n')
     const lines = text.split('\n').filter(line => line.trim())
 
     if (lines.length < 2) {
       return NextResponse.json({ error: 'CSV file is empty or has no data rows' }, { status: 400 })
     }
 
-    const headers = lines[0].split(',').map(h => h.trim().toLowerCase())
+    const headers = parseCSVLine(lines[0]).map(h => h.trim().toLowerCase())
     const format = detectCSVFormat(headers)
+
+    await ensureOrganization(orgId)
 
     let success = 0
     let errors = 0
@@ -186,7 +190,12 @@ async function processShopRow(
     }
   }
 
-  await prisma.customer.create({ data: customerData })
+  try {
+    await prisma.customer.create({ data: customerData })
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : 'Unknown error'
+    return `Failed to save customer (phone: ${phone}): ${msg}`
+  }
 
   if (smsConsent) {
     const customer = await prisma.customer.findFirst({
@@ -283,7 +292,12 @@ async function processStandardRow(
     }
   }
 
-  await prisma.customer.create({ data: customerData })
+  try {
+    await prisma.customer.create({ data: customerData })
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : 'Unknown error'
+    return `Failed to save customer (phone: ${phone}): ${msg}`
+  }
 
   if (smsConsent) {
     const customer = await prisma.customer.findFirst({

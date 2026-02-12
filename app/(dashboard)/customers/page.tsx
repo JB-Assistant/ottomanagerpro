@@ -193,18 +193,12 @@ export default async function CustomersPage({ searchParams }: CustomersPageProps
                       {/* Hover Actions */}
                       <div className="flex items-center gap-1">
                         <div className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
-                          <a 
-                            href={`tel:${customer.phone}`}
-                            onClick={(e) => e.stopPropagation()}
-                          >
+                          <a href={`tel:${customer.phone}`}>
                             <Button size="sm" variant="ghost" className="h-8 w-8 p-0">
                               <Phone className="w-4 h-4" />
                             </Button>
                           </a>
-                          <Link 
-                            href={`/customers/${customer.id}?action=message`}
-                            onClick={(e) => e.stopPropagation()}
-                          >
+                          <Link href={`/customers/${customer.id}?action=message`}>
                             <Button size="sm" variant="ghost" className="h-8 w-8 p-0">
                               <MessageSquare className="w-4 h-4" />
                             </Button>
