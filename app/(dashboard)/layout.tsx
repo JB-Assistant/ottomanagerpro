@@ -7,10 +7,11 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Breadcrumbs } from '@/components/breadcrumbs'
 import { 
-  LayoutDashboard, 
-  Users, 
-  Upload, 
-  Settings, 
+  LayoutDashboard,
+  Users,
+  Wrench,
+  Upload,
+  Settings,
   Car,
   Menu,
   Bell,
@@ -75,6 +76,9 @@ export default function DashboardLayout({
             <NavItem href="/customers" icon={<Users className="w-4 h-4" />}>
               Customers
             </NavItem>
+            <NavItem href="/services" icon={<Wrench className="w-4 h-4" />}>
+              Services
+            </NavItem>
             <NavItem href="/dashboard/reminders" icon={<Bell className="w-4 h-4" />}>
               SMS Reminders
             </NavItem>
@@ -125,6 +129,9 @@ function MobileNav() {
         </NavItem>
         <NavItem href="/customers" icon={<Users className="w-4 h-4" />}>
           Customers
+        </NavItem>
+        <NavItem href="/services" icon={<Wrench className="w-4 h-4" />}>
+          Services
         </NavItem>
         <NavItem href="/dashboard/reminders" icon={<Bell className="w-4 h-4" />}>
           SMS Reminders
